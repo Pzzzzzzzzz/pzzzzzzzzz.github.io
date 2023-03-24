@@ -1,14 +1,14 @@
-baseURL: "https://examplesite.com/"
-title: ExampleSite
+baseURL: https://pzzzzzzzzz.github.io
+title: Pzzzzzzzzz's Blog
 paginate: 5
 theme: PaperMod
+languageCode: en-us
+defaultContentLanguage: zh-cn
 
 enableRobotsTXT: true
 buildDrafts: false
 buildFuture: false
 buildExpired: false
-
-googleAnalytics: UA-123-45
 
 minify:
   disableXML: true
@@ -16,10 +16,10 @@ minify:
 
 params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
-  title: ExampleSite
-  description: "ExampleSite description"
+  title: Pzzzzzzzzz's Blog
+  description: "Pzzzzzzzzz's Blog"
   keywords: [Blog, Portfolio, PaperMod]
-  author: Me
+  author: Pzzzzzzzzz
   # author: ["Me", "You"] # multiple authors
   images: ["<link or path of image for opengraph, twitter-cards>"]
   DateFormat: "January 2, 2006"
@@ -58,13 +58,13 @@ params:
 
   # profile-mode
   profileMode:
-    enabled: false # needs to be explicitly set
-    title: ExampleSite
-    subtitle: "This is subtitle"
-    imageUrl: "<img location>"
+    enabled: true # needs to be explicitly set
+    title: Pzzzzzzzzz's Blog
+    subtitle: "Have fun!"
+    imageUrl: /avatar.jpg
     imageWidth: 120
     imageHeight: 120
-    imageTitle: my image
+    imageTitle: Avatar
     buttons:
       - name: Posts
         url: posts
@@ -82,15 +82,15 @@ params:
     - name: stackoverflow
       url: "https://stackoverflow.com"
     - name: github
-      url: "https://github.com/"
+      url: "https://github.com/Pzzzzzzzzz"
 
   analytics:
     google:
-      SiteVerificationTag: "XYZabc"
+      SiteVerificationTag: ""
     bing:
-      SiteVerificationTag: "XYZabc"
+      SiteVerificationTag: ""
     yandex:
-      SiteVerificationTag: "XYZabc"
+      SiteVerificationTag: ""
 
   cover:
     hidden: true # hide everywhere but not in structured data
@@ -122,10 +122,10 @@ menu:
       name: tags
       url: /tags/
       weight: 20
-    - identifier: example
-      name: example.org
-      url: https://example.org
-      weight: 30
+    # - identifier: example
+    #   name: example.org
+    #   url: https://example.org
+    #   weight: 30
 # Read: https://github.com/adityatelange/hugo-PaperMod/wiki/FAQs#using-hugos-syntax-highlighter-chroma
 pygmentsUseClasses: true
 markup:
