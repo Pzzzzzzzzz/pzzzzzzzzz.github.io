@@ -2,8 +2,6 @@ baseURL: https://pzzzzzzzzz.github.io
 title: Pzzzzzzzzz's Blog
 paginate: 5
 theme: PaperMod
-languageCode: en-us
-defaultContentLanguage: zh-cn
 
 enableRobotsTXT: true
 buildDrafts: false
