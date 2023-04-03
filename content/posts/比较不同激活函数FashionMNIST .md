@@ -142,7 +142,7 @@ plt.legend()
 plt.title('Accuracy')
 plt.show()
 
-![Loss]("D:\hugo图片\a69440af2e665a4b3a85db9287360ca.png")
-![Accuracy]("D:\hugo图片\82ce0c89ecc967c30a709ed2507128d.png")
-
 ```
+
+![](https://pzzzzzzzzz.github.io/images/20230403233355.png)
+![](https://pzzzzzzzzz.github.io/images/20230403233405.png)
