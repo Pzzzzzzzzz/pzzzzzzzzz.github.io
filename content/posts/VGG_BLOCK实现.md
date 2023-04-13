@@ -1,5 +1,5 @@
 ---
-title: "（改良）不同卷积核大小，步长以及是否补零的影响基于MNIST"
+title: "vgg_block块"
 date: 2023-04-08T13:46:02+08:00
 draft: false
 ---
