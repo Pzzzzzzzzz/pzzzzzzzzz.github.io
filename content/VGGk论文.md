@@ -1,5 +1,5 @@
 ---
-title: "vgg_block块"
+title: "vgg_block论文"
 date: 2023-04-13T13:46:02+08:00
 draft: false
 ---
