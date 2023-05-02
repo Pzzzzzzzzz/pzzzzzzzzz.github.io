@@ -1,42 +1,194 @@
 ---
-title: "vgg_block论文"
-date: 2023-04-13T13:46:02+08:00
+title: "实验四块"
+date: 2023-05-2T13:46:02+08:00
 draft: false
 ---
 
-采用较小的接受窗尺寸（3x3）和较小的第一卷积层的步长（1x1）:
-VGG中采用较小的接受窗尺寸（3x3）和较小的第一卷积层的步长（1x1），是因为这两个策略可以增加网络中非线性层的数量，进而增强模型的表达能力，同时减少参数的数量，避免拟合复杂模型带来的过拟合问题。
-较小的接受窗尺寸意味着更少的参数，但是在每个窗口内进行卷积运算，使得每层可以探测出更多的细节信息，从而对图像进行更精细的特征提取，提高了模型的准确性和泛化能力。
-较小的第一卷积层的步长可以保留更多的像素信息，并逐步提取更加深入的图像特征。此外，它还有助于减少卷积神经网络中每层的尺寸，因此可以为后续层留出更多的空间，使得网络可以更加深入。
-
-并没有使用dropout以及LRN，LRN在AlexNet网络中得到了应用，主要是为了增强网络的泛化能力和鲁棒性。而在VGG网络模型中，由于采用了比较深的网络结构和小的卷积核，网络具有更高的抗过拟合能力，因此不需要使用LRN技术。而且LRN技术本身计算开销比较大，会增加网络的训练时间和复杂度。
-
-Dropout属于一种比较有效的正则化方法，可以减少过拟合的风险。但是，在VGG网络模型中，由于采用了很小的卷积核，使得网络的参数数量本身就比较少，因此过拟合风险不太高。这也就不需要加入Dropout正则化技术。
-
-总的来说是为了减小计算成本，简化网络结构。
-
-train：
-在VGG网络模型中，输入数据的尺寸被固定为 224x224，但输入的原始数据图片通常并不具备这一尺寸。
-
-论文中采用了一种随机裁剪(resize-and-crop)的方法来获得固定尺寸的输入数据。对于每一张训练图片，在训练过程中被随机地按比例缩放到一个固定的尺寸，然后随机裁剪成为多张大小为 224x224 的图像，这些图像被作为一个 batch 进行训练（每个 SGD 迭代中对于每个图像只进行一次裁剪）。由于随机裁剪操作的引入，每个周期模型可能会获得不同的图像部分，这样可以更加全面地训练模型，提高泛化能力。
-
-同时，在训练数据上，还采用了数据增强的方法，包括随机水平翻转和以一定范围的概率进行随机 RGB 颜色变换。这些数据增强手段可以生成更多的训练数据，并且让数据变化更加多样化，以此提高模型的泛化能力，避免过拟合。
-
-综上所述，本段论文中介绍了如何得到固定尺寸的输入数据，包括随机裁剪和数据增强的方法，并说明了不同的深度学习网络模型对于输入尺寸的要求不同。这些策略可以提高网络的训练速度和泛化能力，使得VGG网络模型可以更好地应用于计算机视觉任务中。
+实验四：
+目的：学习循环神经网络。
+数据：心跳信号数据集（自己挑出1000条数据，设计训练集和测试集）；
+实验内容：
+1. 利用心跳信号数据集的分类，设计一个循环神经网络；
+2. 比较普通循环网络和LSTM的区别；
+3. 分析循环网络可能出现的问题，及问题发生的原因，以及LSTM是否能解决问题。
 
 
-MULTI-SCALE EVALUATION：
-这一段主要是进行不同缩放比例的，在计算机视觉领域中，不同尺度的物体或者场景信息可能会对最终的分类结果产生影响。因此，在网络模型的训练和测试过程中，通常会在多个尺度下进行测试和评估，以此来得到更加稳健和准确的结果。这部分所提到的 MULTI-SCALE EVALUATION 就是指对于多个尺度下的数据进行评估。
 
-在该论文中，作者采用了一种多尺度的评估方法，即将测试集图片按比例缩放到多个不同的尺度，然后分别进行网络前向传递操作和最终的结果预测。具体地，论文中采用了三种不同的尺度进行评估，分别为原始尺度、2 倍缩放和 3 倍缩放。为了避免不同尺度下测试的不同权重对结果的影响，作者在运算过程中对不同尺度下的测试结果进行加权平均，从而得到最终的分类结果。
+```python
+import csv
 
-此外，作者也探讨了不同尺度下模型在计算复杂度和模型大小之间的平衡。例如，在评估时使用更小的缩放比例可以增加模型的有效感受野，但同时也会增加运算的复杂度。因此，作者在进行评估时还要对优化过程进行调整，以达到最好的性能。
+# 打开原始csv文件
+with open('心跳用于循环神经网络\\new.csv', mode='r') as csv_file:
+    csv_reader = csv.DictReader(csv_file)
 
-综上所述，这段中所提到的 MULTI-SCALE EVALUATION 方法是一种常用的多尺度评估方法，其可以提高分类结果的稳定性和准确性。在VGG网络模型中，作者采用了较为简单的三个固定的缩放比例进行评估，并对模型的性能进行了调整和探讨，以获得最佳的评估效果。
+    # 创建并打开新csv文件，设置表头
+    with open('新文件.csv', mode='w', newline='') as new_file:
+        fieldnames = ['id',  'signal_1', 'signal_2', 'signal_3', 'signal_4', 'signal_5','label']
+        csv_writer = csv.DictWriter(new_file, fieldnames=fieldnames)
 
-SINGLE SCALE EVALUATION：
-在该方法中，所有测试图片都按照固定的尺度进行缩放，并且模型的训练也是基于同一尺度下的图像数据。因此，该方法需要选择合适的尺度大小，在保证模型性能的同时，对测试集中的所有图片都具有较好的适应性。此外，该方法的优点是计算速度较快，且可以避免在多个尺度下的计算复杂度。
+        # 写入表头
+        csv_writer.writeheader()
 
-在论文中采用了固定为 224x224 的输入尺度进行训练和测试。该尺度既考虑了模型的计算速度，又能包含足够的图像信息，并且在 ILSCVR-2012 数据集上表现出了较好的性能。同时，通过与其他尺度进行对比，作者也证明了 224x224 尺度是最佳的选择，其他尺度均存在一定的劣势。
+        # 遍历原始csv文件每一行数据
+        for row in csv_reader:
+            # 获取每行的信息
+            id_val = row['id']
+            label_val = row['label']
+            signals = row['heartbeat_signals'].split(',')[:5]
 
-SINGLE SCALE EVALUATION 优势是计算速度快，且适用于所有测试图片。在 VGG 网络模型中，作者采用了最佳的固定尺度 224x224 进行训练和测试，并获得了较好的性能。
+            # 创建新行并写入新csv文件
+            new_row = {
+                'id': id_val,
+                'label': label_val,
+                'signal_1': signals[0],
+                'signal_2': signals[1],
+                'signal_3': signals[2],
+                'signal_4': signals[3],
+                'signal_5': signals[4]
+            }
+            csv_writer.writerow(new_row)
+
+import pandas as pd
+# 读取csv文件
+data = pd.read_csv("心跳用于循环神经网络\新文件.csv")
+
+# 删除第一列id列
+data = data.drop(columns=["id"])
+
+# 保存更改后的数据
+data.to_csv("heart_sign.csv", index=False)
+
+```
+
+```python
+
+import torch
+import torch.nn as nn
+from torch.utils.data import Dataset, DataLoader
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+class HeartbeatDataset(Dataset):
+    def __init__(self, data_file):
+        # 读取数据文件
+        self.data = torch.from_numpy(np.loadtxt(data_file, delimiter=',', dtype=np.float32,skiprows=1))
+        
+        # 将数据集分为输入序列和标签
+        self.X = self.data[:, :-1]  # 输入序列
+        self.y = self.data[:, -1]   # 标签
+    
+    def __len__(self):
+        return len(self.data)
+    
+    def __getitem__(self, index):
+        return self.X[index], self.y[index]
+
+class RNNModel(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super(RNNModel, self).__init__()
+        self.hidden_size = hidden_size
+        self.rnn = nn.RNN(input_size, hidden_size, batch_first=True)
+        self.fc = nn.Linear(hidden_size, output_size)
+    
+    def forward(self, x):
+        batch_size = x.size(0)
+        hidden = torch.zeros(1, batch_size, self.hidden_size).to(x.device)
+        out, hidden = self.rnn(x, hidden)
+        out = self.fc(hidden.squeeze(0))
+        return out
+
+class LSTMModel(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super(LSTMModel, self).__init__()
+        self.hidden_size = hidden_size
+        self.lstm = nn.LSTM(input_size, hidden_size, batch_first=True)
+        self.fc = nn.Linear(hidden_size, output_size)
+    
+    def forward(self, x):
+        batch_size = x.size(0)
+        hidden = torch.zeros(1, batch_size, self.hidden_size).to(x.device)
+        cell = torch.zeros(1, batch_size, self.hidden_size).to(x.device)
+        out, (hidden, cell) = self.lstm(x, (hidden, cell))
+        out = self.fc(hidden.squeeze(0))
+        return out
+
+# 训练参数
+num_epochs = 50
+batch_size = 32
+learning_rate = 0.001
+
+# 加载数据集
+dataset = HeartbeatDataset('心跳用于循环神经网络\heart_sign.csv')
+train_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+
+# 定义模型、损失函数和优化器
+input_size = dataset.X.shape[1]
+output_size = len(torch.unique(dataset.y))
+hidden_size = 128
+rnn_model = RNNModel(input_size, hidden_size, output_size)
+lstm_model = LSTMModel(input_size, hidden_size, output_size)
+criterion = nn.CrossEntropyLoss()
+rnn_optimizer = torch.optim.Adam(rnn_model.parameters(), lr=learning_rate)
+lstm_optimizer = torch.optim.Adam(lstm_model.parameters(), lr=learning_rate)
+
+
+train_rnn_losses = []
+train_lstm_losses = []
+
+
+# 训练模型
+for epoch in range(num_epochs):
+    total_rnn_loss = 0
+    total_lstm_loss = 0
+    for batch_x, batch_y in train_loader:
+        # 计算 RNN 模型的损失
+        rnn_optimizer.zero_grad()
+        rnn_output = rnn_model(batch_x.unsqueeze(1))
+        batch_y = batch_y.long()
+        rnn_loss = criterion(rnn_output, batch_y)
+        rnn_loss.backward()
+        rnn_optimizer.step()
+        total_rnn_loss += rnn_loss.item()
+
+        # 计算 LSTM 模型的损失
+        lstm_optimizer.zero_grad()
+        lstm_output = lstm_model(batch_x.unsqueeze(1))
+        lstm_loss = criterion(lstm_output, batch_y)
+        lstm_loss.backward()
+        lstm_optimizer.step()
+        total_lstm_loss += lstm_loss.item()
+
+
+    # 记录训练损失
+    train_rnn_losses.append(total_rnn_loss / len(train_loader))
+    train_lstm_losses.append(total_lstm_loss / len(train_loader))
+
+    # 打印训练损失
+    print(f'Epoch [{epoch + 1}/{num_epochs}], RNN loss: {total_rnn_loss / len(train_loader):.4f}, LSTM loss: {total_lstm_loss / len(train_loader):.4f}')
+  
+# 测试模型
+with torch.no_grad():
+    rnn_model.eval()
+    lstm_model.eval()
+    test_x = dataset.X.unsqueeze(1)
+    test_y = dataset.y
+    rnn_pred = rnn_model(test_x).argmax(1)
+    lstm_pred = lstm_model(test_x).argmax(1)
+    print(f'RNN accuracy: {(rnn_pred == test_y).sum().item() / len(test_y)}')
+    print(f'LSTM accuracy: {(lstm_pred == test_y).sum().item() / len(test_y)}')
+
+# 绘制损失函数随时间的变化图
+plt.plot(range(num_epochs), train_rnn_losses, label='RNN')
+plt.plot(range(num_epochs), train_lstm_losses, label='LSTM')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+plt.show()
+
+```
+普通的循环神经网络由于其可重复的连接方式和非线性激活函数，导致在训练时容易遇到梯度爆炸或消失问题。梯度爆炸会导致权重值失去平衡，从而影响学习结果；而梯度消失则表示网络无法有效地学习长期依赖性关系，并导致网络输出变得平稳。这些问题可以被通过使用更稳定的初始化方式、正则化和截断反向传播等技术来解决，但这些方法往往不够理想，而且不同的网络结构和不同的数据集需要不同的方法。
+
+LSTM 网络是一种针对普通循环神经网络问题所提出的解决方案。LSTM 网络通过引入门控机制和细胞状态，克服了普通 RNN 的问题。门控机制允许网络在每个时间步骤选择性地输出信息，从而使网络更加高效和稳定。细胞状态允许网络有效地捕捉长期依赖性关系，使网络能够记住以前输入的信息，从而更好地预测后续的输出。
+
+也就是说，LSTM 网络具有更好的性能和稳定性，能够更好地处理长序列和时间序列数据。而普通的循环神经网络在处理相对较短的数据时，例如一段文本或一段时间内的感知数据等，相比LSTM并不会出现显著的问题。
